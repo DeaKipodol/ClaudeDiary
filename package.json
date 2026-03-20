@@ -1,0 +1,12 @@
+{
+  "name": "claudediary",
+  "version": "1.0.0",
+  "description": "Claude Code 세션 기록 뷰어",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

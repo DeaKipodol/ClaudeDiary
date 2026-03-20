@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClaudeDiary</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 헤더 -->
+  <header class="header">
+    <div class="header-left">
+      <span class="logo">⚡</span>
+      <span class="logo-text">ClaudeDiary</span>
+    </div>
+    <div class="header-center">
+      <div class="search-wrap">
+        <span class="search-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </span>
+        <input id="search" class="search" type="text" placeholder="세션 검색..." autocomplete="off" />
+        <kbd class="search-hint">⌘K</kbd>
+      </div>
+    </div>
+    <div class="header-right">
+      <button id="btn-refresh" class="btn-icon" title="새로고침">
+        <svg class="refresh-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+          <path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+        </svg>
+      </button>
+      <button id="btn-settings" class="btn-icon" title="설정">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- 바디 -->
+  <div class="layout">
+
+    <!-- 사이드바: 프로젝트 필터 -->
+    <aside class="sidebar">
+      <div class="sidebar-title">프로젝트</div>
+      <ul id="project-list" class="project-list">
+        <li class="project-item active" data-project="all">
+          <span class="project-name">전체</span>
+          <span class="project-count" id="count-all">—</span>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- 메인: 세션 카드 -->
+    <main class="main">
+      <div class="main-toolbar">
+        <span id="session-count" class="session-count">불러오는 중…</span>
+        <div class="sort-wrap">
+          <label class="sort-label">정렬</label>
+          <select id="sort-select" class="sort-select">
+            <option value="date">최신순</option>
+            <option value="name">이름순</option>
+            <option value="project">프로젝트순</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="main-body">
+        <div id="session-grid" class="session-grid">
+          <div class="loading">
+            <div class="spinner"></div>
+            <p>세션 파일 읽는 중…</p>
+            <p class="loading-sub">처음 로드는 시간이 걸릴 수 있습니다</p>
+          </div>
+        </div>
+        <div id="detail-panel" class="detail-panel"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 설정 모달 -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">설정</h2>
+        <button id="modal-close" class="btn-icon">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <section class="setting-section">
+          <h3 class="setting-heading">테마</h3>
+          <div class="theme-options">
+            <div class="theme-option" data-theme-opt="light">☀️ 라이트</div>
+            <div class="theme-option" data-theme-opt="dark">🌙 다크</div>
+          </div>
+        </section>
+
+        <section class="setting-section">
+          <h3 class="setting-heading">Claude 실행 경로</h3>
+          <p class="setting-desc">OS마다 경로가 다를 수 있습니다. 비워두면 자동 감지합니다.</p>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="claude-path-input" type="text" placeholder="/opt/homebrew/bin/claude"
+              style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg-2);color:var(--text-1);font-size:13px;font-family:monospace" />
+            <button id="claude-path-save" style="padding:7px 14px;border-radius:6px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:13px">저장</button>
+          </div>
+        </section>
+
+        <section class="setting-section">
+          <h3 class="setting-heading">터미널 앱</h3>
+          <p class="setting-desc">세션을 클릭했을 때 어느 터미널에서 열지 선택하세요</p>
+          <div class="terminal-options">
+            <label class="terminal-option" data-terminal="iterm2">
+              <input type="radio" name="terminal" value="iterm2" />
+              <span class="terminal-icon">🟢</span>
+              <span class="terminal-name">iTerm2</span>
+            </label>
+            <label class="terminal-option" data-terminal="terminal">
+              <input type="radio" name="terminal" value="terminal" />
+              <span class="terminal-icon">⬛</span>
+              <span class="terminal-name">Terminal.app</span>
+            </label>
+            <label class="terminal-option" data-terminal="warp">
+              <input type="radio" name="terminal" value="warp" />
+              <span class="terminal-icon">🌀</span>
+              <span class="terminal-name">Warp</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="setting-section">
+          <h3 class="setting-heading">고정된 세션 <span id="pinned-count" class="badge">0</span></h3>
+          <p class="setting-desc">고정된 세션은 항상 목록 맨 위에 표시됩니다</p>
+          <ul id="pinned-list" class="pinned-list"></ul>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
