@@ -27,7 +27,18 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // ─── 경로 상수 ────────────────────────────────────────────
 const CLAUDE_PROJECTS_DIR = path.join(os.homedir(), '.claude', 'projects')
-const SETTINGS_PATH = path.join(__dirname, 'settings.json')
+
+// OS별 user data 디렉토리 (pkg 번들 시 쓰기 가능 경로 필요)
+function getUserDataDir() {
+  const home = os.homedir()
+  if (process.platform === 'darwin') return path.join(home, 'Library', 'Application Support', 'ClaudeDiary')
+  if (process.platform === 'win32')  return path.join(process.env.APPDATA || path.join(home, 'AppData', 'Roaming'), 'ClaudeDiary')
+  return path.join(process.env.XDG_CONFIG_HOME || path.join(home, '.config'), 'ClaudeDiary')
+}
+
+const USER_DATA_DIR = getUserDataDir()
+try { fs.mkdirSync(USER_DATA_DIR, { recursive: true }) } catch {}
+const SETTINGS_PATH = path.join(USER_DATA_DIR, 'settings.json')
 
 // 파일 앞부분: cwd, slug, 첫 메시지 추출용
 const HEAD_LINES = 80
